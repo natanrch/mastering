@@ -6,10 +6,10 @@ error_reporting(E_ALL);
 
 require_once 'config.php';
 
-spl_autoload_register('carregarClasse');
+spl_autoload_register('loadClass');
 
-function carregarClasse($nomeClasse) {
-	if (file_exists('classes/'.$nomeClasse.'.php')) {
-		require_once 'classes/'.$nomeClasse.'.php';
+function loadClass($className) {
+	if (file_exists('class/'.$className.'.php')) {
+		require_once 'class/'.$className.'.php';
 	}
 }
