@@ -34,7 +34,7 @@ $tables = insertField($totalSec, $today);
 
 foreach ($tables as $t) {
 	$tableSum = Connection::selectSum($t);
-	echo "Hours worked with ".$t.": ". calcHoursWorked($tableSum)."\n";
+	echo "Total hours worked with ".$t.": ". calcHoursWorked($tableSum)."\n";
 }
 
-echo "Hours worked as a web developer: ".$hoursWorked."\n";
+echo "Total hours worked as a web developer: ".$hoursWorked."\n";
