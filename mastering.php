@@ -1,12 +1,12 @@
 <?php
 
 require_once 'global.php';
+require_once 'database.php';
+require_once 'conversion.php';
 
 $startTime = new DateTime();
 echo "Started at: ".$startTime->format('Y-m-d H:i:s')."\n";
 echo "Counting work time...\n";
-
-
 
 do {
 	$finish = readline("Type 's' to stop the counter: ");
@@ -20,86 +20,21 @@ echo "Hours: ".$diff->h."\n";
 echo "Minutes: ".$diff->i."\n";
 echo "Seconds: ".$diff->s."\n";
 
-$hoursToSec = $diff->h * 3600;
-$minToSec = $diff->i * 60;
-$sec = $diff->s;
-
-$totalSec = $hoursToSec+$minToSec+$sec;
+$totalSec = convertToSec($diff->h, $diff->i, $diff->s);
 
 $now = time();
 $today = date("Y-m-d", $now);
 
+
 Connection::insert('web_development', $today, $totalSec);
-
-insertField($totalSec, $today);
-
 $sum = Connection::selectSum('web_development');
-
-var_dump($sum[0]["total_sec"]);
-
 $hoursWorked = calcHoursWorked($sum);
 
-echo "Horas trabalhadas: ".$hoursWorked."\n";
+$tables = insertField($totalSec, $today);
 
-function insertField($totalSec, $today) {
-	$field = null;
-	while ($field == null) {
-
-		echo "Choose the field:\n";
-		$option = readline("1 - Coding    2 - UX    3 - SEO    4 - Engineering\n");
-
-		switch ($option) {
-			case 1:
-				$field = 'coding';
-				break;
-			case 2:
-				$field = 'ux';
-				break;
-			case 3:
-				$field = 'seo';
-				break;
-			case 4:
-				$field = 'engineering';
-				break;
-			default:
-				$field = null;
-				echo "Please, choose the right field\n";
-		}
-	}
-	Connection::insert($field, $today, $totalSec);
-	echo "Chosen field: ".$field."\n";
-	if ($field == 'coding') {
-		insertLanguage($totalSec, $today);
-	}
-
-	return $field;
+foreach ($tables as $t) {
+	$tableSum = Connection::selectSum($t);
+	echo "Hours worked with ".$t.": ". calcHoursWorked($tableSum)."\n";
 }
 
-function insertLanguage($totalSec, $today) {
-	$language = null;
-	while ($language == null) {
-
-		echo "Choose the language:\n";
-		$option = readline("1 - PHP    2 - Java\n");
-
-		switch ($option) {
-			case 1:
-				$language = 'php';
-				break;
-			case 2:
-				$language = 'java';
-				break;
-			default:
-				$language = null;
-				echo "Please, choose the right language\n";
-		}
-	}
-	Connection::insert($language, $today, $totalSec);
-	echo "Chosen language: ".$language."\n";
-}
-
-function calcHoursWorked($sum) {
-	$sec = $sum[0]["total_sec"];
-	$hours = $sec/3600;
-	return $hours;
-}
+echo "Hours worked as a web developer: ".$hoursWorked."\n";
