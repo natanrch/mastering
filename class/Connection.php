@@ -18,4 +18,13 @@ class Connection
         $conn = Connection::getConnection();
         $conn->exec($query);
 	}
+
+	public static function selectSum($table)
+	{
+		$query = "SELECT sum(sec) as total_sec from ".$table;
+        $conn = Connection::getConnection();
+        $res = $conn->query($query);
+        $sum = $res->fetchAll();
+        return $sum;
+	}
 }

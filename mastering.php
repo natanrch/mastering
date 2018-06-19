@@ -9,7 +9,7 @@ echo "Counting work time...\n";
 
 
 do {
-	$finish = readline("Type 's' to stop the counter:");
+	$finish = readline("Type 's' to stop the counter: ");
 } while ($finish != 's');
 
 $endTime = new DateTime();
@@ -29,14 +29,17 @@ $totalSec = $hoursToSec+$minToSec+$sec;
 $now = time();
 $today = date("Y-m-d", $now);
 
-
-// $formattedDate = $startTime->y."-".$startTime->m."-".$startTime->d;
-// echo "Data formatada: ".$formattedDate;
-
+Connection::insert('web_development', $today, $totalSec);
 
 insertField($totalSec, $today);
 
-Connection::insert('web_development', $today, $totalSec);
+$sum = Connection::selectSum('web_development');
+
+var_dump($sum[0]["total_sec"]);
+
+$hoursWorked = calcHoursWorked($sum);
+
+echo "Horas trabalhadas: ".$hoursWorked."\n";
 
 function insertField($totalSec, $today) {
 	$field = null;
@@ -95,3 +98,8 @@ function insertLanguage($totalSec, $today) {
 	echo "Chosen language: ".$language."\n";
 }
 
+function calcHoursWorked($sum) {
+	$sec = $sum[0]["total_sec"];
+	$hours = $sec/3600;
+	return $hours;
+}
