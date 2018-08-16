@@ -23,8 +23,10 @@ function insertField($totalSec, $today) {
 				break;
 			case 5:
 				$field = 'design';
+				break;
 			case 6: 
 				$field = 'wordpress';
+				break;
 			default:
 				$field = null;
 				echo "Please, choose the right field\n";
